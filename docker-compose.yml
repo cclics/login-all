@@ -1,0 +1,48 @@
+services:
+  postgres:
+    container_name: postgres-sql-volley
+    image: postgres
+    environment:
+      POSTGRES_USER: admin_volley
+      POSTGRES_PASSWORD: admin_volley
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: db_login
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - spring-volley
+    restart: unless-stopped
+  mail-dev:
+    container_name: mail-dev-volley
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+  login-api:
+    container_name: login-api
+    image: login/login:1.0.0
+    ports:
+      - 8088:8088
+    networks:
+      - spring-volley
+    depends_on:
+      - postgres
+  login-ui:
+    container_name: login-ui
+    image: login/login-ui:1.0.0
+    ports:
+      - 8080:80
+    networks:
+      - spring-volley
+    depends_on:
+      - login-api
+networks:
+  spring-volley:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
+
