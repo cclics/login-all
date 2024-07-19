@@ -22,7 +22,7 @@ jobs:
 
       - name: Extract project version
         id: extract_version
-        run:
+        run: |
           cd login-ui
           echo "VERSION=$(jq -r '.version' package.json)" >> $GITHUB_OUTPUT
 
