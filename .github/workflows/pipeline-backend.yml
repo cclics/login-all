@@ -1,0 +1,113 @@
+name: Login Backend API Pipeline
+
+on:
+  push:
+    branches:
+        - ci/pipeline
+    paths:
+      - login-app/**
+      - docker/backend/**
+      - 'docker-compose.yml'
+      - .github/workflows/*-backend.yml
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    name: Compile project
+    steps:
+      - name: Checkout cde
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-jdk@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Compile project
+        run: |
+          cd login-app
+          ./mvnw clean compile
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    name: Unit tests
+    steps:
+      - name: Checkout cde
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-jdk@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Running unit Tests
+        run: |
+          cd login-app
+          ./mvnw clean test
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build backend
+    needs: [compile, unit-tests]
+    steps:
+      - name: Checkout cde
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-jdk@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Compile project
+        run: |
+          cd login-app
+          ./mvnw clean compile
+
+  build-image:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Checkout cde
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup JDK
+        uses: actions/setup-jdk@v4
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+      - name: Extract project version
+        id: extract_version
+        run: |
+          cd login-app
+          echo "VERSION=$(./mvnw -q -Dexec.executable='echo' -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build & Push to DockerHub
+        uses: docker/build-push-action@v5
+        with:
+          context: login-app
+          file: docker/backend/Dockerfile
+          push: true
+          platforms: linux/amd64
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/login-api:${{ steps.extract_version.outputs.VERSION }},${{ steps.extract_version.outputs.VERSION }}/login-api:latest
+
+          build-args: |
+            PROFILE=dev
+            APP_VERSION=${{ steps.extract_version.outputs.VERSION }}
+

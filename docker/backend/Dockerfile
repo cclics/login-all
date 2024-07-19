@@ -21,5 +21,9 @@ EXPOSE 8088
 ENV DB_URL=${POSTGRES_URL}
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
+# Definition for GitActions
+ENV EMAIL_HOST_NAME=missing_host_name
+ENV EMAIL_USER_NAME=missing_user_name
+ENV EMAIL_PASSWORD=missing_password
 
 CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} login-app-${JAR_VERSION}.jar
