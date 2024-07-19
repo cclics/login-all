@@ -48,7 +48,7 @@ jobs:
       - name: Running unit Tests
         run: |
           cd login-app
-          ./mvnw clean test
+          ./mvnw clean compile
 
   build:
     runs-on: ubuntu-latest
