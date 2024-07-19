@@ -105,7 +105,7 @@ jobs:
           file: docker/backend/Dockerfile
           push: true
           platforms: linux/amd64
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/login-api:${{ steps.extract_version.outputs.VERSION }},${{ steps.extract_version.outputs.VERSION }}/login-api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/login-api:${{ steps.extract_version.outputs.VERSION }}
 
           build-args: |
             PROFILE=dev
