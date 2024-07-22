@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 public class LoginAppApplication {
 
+	// Get the port number of the host server
 	@Value("${server.port}")
 	String serverPort1;
 
