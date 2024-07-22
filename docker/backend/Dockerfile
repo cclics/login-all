@@ -25,4 +25,5 @@ ENV EMAIL_HOST_NAME=missing_host_name
 ENV EMAIL_USER_NAME=missing_user_name
 ENV EMAIL_PASSWORD=missing_password
 
-CMD java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} login-app-${JAR_VERSION}.jar
+#CMD java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL} login-app-${JAR_VERSION}.jar
+CMD java -jar -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=jdbc:postgresql://localhost:5432/db_login login-app-${JAR_VERSION}.jar
