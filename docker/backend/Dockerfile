@@ -11,6 +11,9 @@ FROM amazoncorretto:17
 
 ARG PROFILE=dev
 ARG APP_VERSION=1.0.0
+ARG EMAIL_HOST_NAME=missing_host_name
+ARG EMAIL_USER_NAME=missing_user_name
+ARG EMAIL_PASSWORD=missing_password
 
 WORKDIR /app
 COPY --from=build /build/target/login-app-*.jar /app/
@@ -21,8 +24,8 @@ ENV DB_URL=jdbc:postgresql://postgres-sql-volley:5432/db_login
 ENV ACTIVE_PROFILE=${PROFILE}
 ENV JAR_VERSION=${APP_VERSION}
 # Definition for GitActions
-ENV EMAIL_HOST_NAME=missing_host_name
-ENV EMAIL_USER_NAME=missing_user_name
-ENV EMAIL_PASSWORD=missing_password
+ENV EMAIL_HOST_NAME=${EMAIL_HOST_NAME}
+ENV EMAIL_USER_NAME=${EMAIL_USER_NAME}
+ENV EMAIL_PASSWORD=${EMAIL_PASSWORD}
 
 CMD java -jar -Dspring.profiles.active=${ACTIVE_PROFILE} -Dspring.datasource.url=${DB_URL}  login-app-${JAR_VERSION}.jar
