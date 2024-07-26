@@ -14,15 +14,9 @@ services:
     networks:
       - spring-volley
     restart: unless-stopped
-  mail-dev:
-    container_name: mail-dev-volley
-    image: maildev/maildev
-    ports:
-      - 1080:1080
-      - 1025:1025
   login-api:
     container_name: login-api
-    image: login/login:1.0.0
+    image: cclics/login-api:1.0.0
     ports:
       - 8088:8088
     networks:
@@ -31,13 +25,14 @@ services:
       - postgres
   login-ui:
     container_name: login-ui
-    image: login/login-ui:1.0.0
+    image: cclics/login-ui:1.0.0
     ports:
       - 8080:80
     networks:
       - spring-volley
     depends_on:
       - login-api
+    
 networks:
   spring-volley:
     driver: bridge
